@@ -1,0 +1,56 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nats
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: nats
+rules:
+- apiGroups: [""]
+  resources:
+  - configmaps
+  verbs: ["create", "watch", "get", "update", "delete", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: nats-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: nats
+subjects:
+- kind: ServiceAccount
+  name: nats
+  namespace: default
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nats-leaf-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: nats-leaf-controller
+  template:
+    metadata:
+      labels:
+        name: nats-leaf-controller
+    spec:
+      serviceAccountName: nats
+      containers:
+      - name: nats-leaf-controller
+        image: wallyqs/satellite:0.1.0
+        imagePullPolicy: IfNotPresent
+        args:
+        - nats-leaf-controller
+        - -s=nats://nats:4222
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
