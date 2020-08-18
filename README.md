@@ -54,6 +54,9 @@ that the reload was successful:
 
 ```sh
 $ kubectl logs nats-0 -c nats --follow
+[6] 2020/08/18 21:36:40.859351 [INF] Cluster name updated to CLUSTER_A
+[6] 2020/08/18 21:36:40.859360 [INF] Reloaded: cluster
+[6] 2020/08/18 21:36:40.859425 [INF] Reloaded server configuration
 ```
 
 ## Local Development
