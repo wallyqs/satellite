@@ -14,15 +14,17 @@ service/nats created
 statefulset.apps/nats created
 ```
 
-The pods in this cluster, will all be sharing a single `nats-config` file
+The pods in this cluster, will all be sharing a single `nats-config` ConfigMap
 that can be updated and reloaded at at anytime by the reloader sidecar
 in case it detects changes to it.  This NATS cluster will have a leafnode
 connection to another external NATS Server so that it can be controlled
 remotely.
 
 In order to do so, connected to the same NATS cluster, there will be a `leaf-controller` process
-that will expose an NATS based API that can be used to make updates to the 
-remote ConfigMap from a NATS cluster.  To deploy this `leaf-controller`:
+that will expose a NATS based API that can be used to make updates to the 
+remote ConfigMap from a NATS cluster.  
+
+To deploy this `leaf-controller`:
 
 ```sh
 $ kubectl apply -f k8s/leaf-controller-A.yaml
